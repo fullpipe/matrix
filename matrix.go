@@ -22,7 +22,7 @@ func (matrix *Matrix) Size() int {
 	return matrix.m * matrix.n
 }
 
-// Equals two matrices
+// Equals compares two matrices
 func (matrix *Matrix) Equals(matrixRight *Matrix) bool {
 	if matrix.m != matrixRight.m || matrix.n != matrixRight.n {
 		return false
@@ -39,8 +39,7 @@ func (matrix *Matrix) Equals(matrixRight *Matrix) bool {
 	return true
 }
 
-//Add matrix to matrixRight of two m-by-n matrices A and B is calculated entrywise
-//returns new matrix
+//Add returns (matrix + matrixRight)
 func (matrix *Matrix) Add(matrixRight *Matrix) *Matrix {
 	if matrix.m != matrixRight.m || matrix.n != matrixRight.n {
 		panic("matrix should have same sizes")
@@ -51,8 +50,7 @@ func (matrix *Matrix) Add(matrixRight *Matrix) *Matrix {
 	})
 }
 
-//Multiplication of two matrices is defined if and only if the number of columns of the left matrix is the same as the number of rows of the right matrix.
-//returns new matrix
+//Multiplication  returns (matrix · matrixRight)
 func (matrix *Matrix) Multiplication(matrixRight *Matrix) *Matrix {
 	if matrix.n != matrixRight.m {
 		panic("the number of columns of the left matrix should be the same as the number of rows of the right matrix")
@@ -72,43 +70,32 @@ func (matrix *Matrix) Multiplication(matrixRight *Matrix) *Matrix {
 	return resultMatrix
 }
 
-//ScalarMultiplication (cA)i,j = c · Ai,j
+//ScalarMultiplication returns (scalar · matrix)
 func (matrix *Matrix) ScalarMultiplication(scalar float64) *Matrix {
-	return matrix.Clone().Map(func(val float64) float64 {
+	return matrix.Clone().Walk(func(val float64, i int, j int) float64 {
 		return scalar * val
 	})
 }
 
-// Transpose matrix
+// Transpose returns transposed matrix
 func (matrix *Matrix) Transpose() *Matrix {
 	return matrix.Clone().Walk(func(val float64, i int, j int) float64 {
 		return matrix.data[j][i]
 	})
 }
 
-// Map matrix elements
-func (matrix *Matrix) Map(mapper func(val float64) float64) *Matrix {
+// Walk applies the callback to the elements of the given matrix
+func (matrix *Matrix) Walk(callback func(val float64, i int, j int) float64) *Matrix {
 	for i := 0; i < matrix.m; i++ {
 		for j := 0; j < matrix.n; j++ {
-			matrix.data[i][j] = mapper(matrix.data[i][j])
+			matrix.data[i][j] = callback(matrix.data[i][j], i, j)
 		}
 	}
 
 	return matrix
 }
 
-// Walk matrix elements
-func (matrix *Matrix) Walk(walker func(val float64, i int, j int) float64) *Matrix {
-	for i := 0; i < matrix.m; i++ {
-		for j := 0; j < matrix.n; j++ {
-			matrix.data[i][j] = walker(matrix.data[i][j], i, j)
-		}
-	}
-
-	return matrix
-}
-
-//Clone matrix
+//Clone returns copy of matrix
 func (matrix *Matrix) Clone() *Matrix {
 	rawData := make([][]float64, matrix.m)
 
@@ -139,7 +126,7 @@ func NewMatrix(m int, n int, rawData []float64) *Matrix {
 	return &Matrix{m: m, n: n, data: data}
 }
 
-//NewZeroMatrix creates new empty matrix
+//NewZeroMatrix creates new zero Matrix
 func NewZeroMatrix(m int, n int) *Matrix {
 	rawData := make([]float64, m*n)
 
