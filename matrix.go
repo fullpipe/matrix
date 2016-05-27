@@ -1,3 +1,4 @@
+//Package matrix provides simple matrix struct with basic matrix operations
 package matrix
 
 // Matrix represents base matrix struct
