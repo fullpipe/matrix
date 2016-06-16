@@ -163,3 +163,37 @@ func TestDimensions(t *testing.T) {
 		}
 	}
 }
+
+func TestGetRow(t *testing.T) {
+	testData := []struct {
+		matrix *Matrix
+		i      int
+		row    *Matrix
+	}{
+		{NewMatrix(2, 2, []float64{2, 3, 4, 1}), 1, NewMatrix(1, 2, []float64{4, 1})},
+	}
+
+	for _, test := range testData {
+		result := test.matrix.GetRow(test.i)
+		if !result.Equals(test.row) {
+			t.Errorf("result matrix %v should equals %v", test.row, result)
+		}
+	}
+}
+
+func TestGetColumn(t *testing.T) {
+	testData := []struct {
+		matrix *Matrix
+		i      int
+		row    *Matrix
+	}{
+		{NewMatrix(2, 2, []float64{2, 3, 4, 1}), 1, NewMatrix(2, 1, []float64{3, 1})},
+	}
+
+	for _, test := range testData {
+		result := test.matrix.GetColumn(test.i)
+		if !result.Equals(test.row) {
+			t.Errorf("result matrix %v should equals %v", test.row, result)
+		}
+	}
+}

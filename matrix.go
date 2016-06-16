@@ -1,4 +1,4 @@
-//Package matrix provides simple matrix struct with basic matrix operations
+// Package matrix provides simple matrix struct with basic matrix operations
 package matrix
 
 // Matrix represents base matrix struct
@@ -105,6 +105,32 @@ func (matrix *Matrix) Clone() *Matrix {
 	}
 
 	return &Matrix{m: matrix.m, n: matrix.n, data: rawData}
+}
+
+// GetRow returns Row vector
+func (matrix *Matrix) GetRow(i int) *Matrix {
+	if i >= matrix.m {
+		panic("i is out of bounds")
+	}
+
+	rawData := append([]float64(nil), matrix.data[i]...)
+
+	return NewMatrix(1, matrix.n, rawData)
+}
+
+// GetColumn returns Column vector
+func (matrix *Matrix) GetColumn(j int) *Matrix {
+	if j >= matrix.n {
+		panic("j is out of bounds")
+	}
+
+	rawData := make([]float64, matrix.m)
+
+	for i := 0; i < matrix.m; i++ {
+		rawData[i] = matrix.data[i][j]
+	}
+
+	return NewMatrix(matrix.m, 1, rawData)
 }
 
 // NewMatrix creates new Matrix struct
