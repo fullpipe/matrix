@@ -46,9 +46,18 @@ func (matrix *Matrix) Add(matrixRight *Matrix) *Matrix {
 		panic("matrix should have same sizes")
 	}
 
-	return matrix.Clone().Walk(func(val float64, i int, j int) float64 {
+	return matrix.Clone().Map(func(val float64, i int, j int) float64 {
 		return val + matrixRight.data[i][j]
 	})
+}
+
+//At returns ceil value
+func (matrix *Matrix) At(i int, j int) float64 {
+	if i >= matrix.m || j >= matrix.n {
+		panic("out of bounds")
+	}
+
+	return matrix.data[i][j]
 }
 
 //Multiplication  returns (matrix · matrixRight)
@@ -59,7 +68,7 @@ func (matrix *Matrix) Multiplication(matrixRight *Matrix) *Matrix {
 
 	resultMatrix := NewZeroMatrix(matrix.m, matrixRight.n)
 
-	resultMatrix.Walk(func(val float64, i int, j int) float64 {
+	resultMatrix.Map(func(val float64, i int, j int) float64 {
 		summ := 0.0
 		for n := 0; n < matrix.n; n++ {
 			summ += matrix.data[i][n] * matrixRight.data[n][j]
@@ -73,23 +82,37 @@ func (matrix *Matrix) Multiplication(matrixRight *Matrix) *Matrix {
 
 //ScalarMultiplication returns (scalar · matrix)
 func (matrix *Matrix) ScalarMultiplication(scalar float64) *Matrix {
-	return matrix.Clone().Walk(func(val float64, i int, j int) float64 {
+	return matrix.Clone().Map(func(val float64, i int, j int) float64 {
 		return scalar * val
 	})
 }
 
 // Transpose returns transposed matrix
 func (matrix *Matrix) Transpose() *Matrix {
-	return matrix.Clone().Walk(func(val float64, i int, j int) float64 {
+	transposed := NewZeroMatrix(matrix.n, matrix.m)
+	transposed.Map(func(val float64, i int, j int) float64 {
 		return matrix.data[j][i]
 	})
+
+	return transposed
 }
 
-// Walk applies the callback to the elements of the given matrix
-func (matrix *Matrix) Walk(callback func(val float64, i int, j int) float64) *Matrix {
+// Map applies the callback to the elements of the given matrix
+func (matrix *Matrix) Map(callback func(val float64, i int, j int) float64) *Matrix {
 	for i := 0; i < matrix.m; i++ {
 		for j := 0; j < matrix.n; j++ {
 			matrix.data[i][j] = callback(matrix.data[i][j], i, j)
+		}
+	}
+
+	return matrix
+}
+
+// Walk through matrix
+func (matrix *Matrix) Walk(callback func(val float64, i int, j int)) *Matrix {
+	for i := 0; i < matrix.m; i++ {
+		for j := 0; j < matrix.n; j++ {
+			callback(matrix.data[i][j], i, j)
 		}
 	}
 

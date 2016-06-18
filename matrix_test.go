@@ -91,6 +91,7 @@ func TestTranspose(t *testing.T) {
 		{NewMatrix(2, 2, []float64{1, 1, 1, 1}), NewMatrix(2, 2, []float64{1, 1, 1, 1})},
 		{NewMatrix(2, 2, []float64{1, 1, 2, 2}), NewMatrix(2, 2, []float64{1, 2, 1, 2})},
 		{NewMatrix(2, 2, []float64{1, 2, 3, 4}), NewMatrix(2, 2, []float64{1, 3, 2, 4})},
+		{NewMatrix(1, 4, []float64{1, 2, 3, 4}), NewMatrix(4, 1, []float64{1, 2, 3, 4})},
 	}
 
 	for _, test := range testData {
@@ -177,6 +178,13 @@ func TestZeroClone(t *testing.T) {
 		if !clone.Equals(test.right) {
 			t.Errorf("result matrix %v should equals %v", test.right, clone)
 		}
+	}
+}
+
+func TestAt(t *testing.T) {
+	matrix := NewMatrix(2, 2, []float64{1, 2, 3, 4})
+	if matrix.At(0, 0) != 1 || matrix.At(0, 1) != 2 || matrix.At(1, 0) != 3 || matrix.At(1, 1) != 4 {
+		t.Errorf("some thing wrong with At method")
 	}
 }
 
