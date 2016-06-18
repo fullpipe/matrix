@@ -164,6 +164,22 @@ func TestDimensions(t *testing.T) {
 	}
 }
 
+func TestZeroClone(t *testing.T) {
+	testData := []struct {
+		left  *Matrix
+		right *Matrix
+	}{
+		{NewMatrix(2, 2, []float64{2, 3, 4, 1}), NewMatrix(2, 2, []float64{0, 0, 0, 0})},
+	}
+
+	for _, test := range testData {
+		clone := test.left.ZeroClone()
+		if !clone.Equals(test.right) {
+			t.Errorf("result matrix %v should equals %v", test.right, clone)
+		}
+	}
+}
+
 func TestGetRow(t *testing.T) {
 	testData := []struct {
 		matrix *Matrix

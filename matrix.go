@@ -107,6 +107,11 @@ func (matrix *Matrix) Clone() *Matrix {
 	return &Matrix{m: matrix.m, n: matrix.n, data: rawData}
 }
 
+// ZeroClone clones zeroed matrix
+func (matrix *Matrix) ZeroClone() *Matrix {
+	return NewZeroMatrix(matrix.m, matrix.n)
+}
+
 // GetRow returns Row vector
 func (matrix *Matrix) GetRow(i int) *Matrix {
 	if i >= matrix.m {
